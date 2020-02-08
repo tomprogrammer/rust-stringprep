@@ -18,9 +18,9 @@ fn main() {
 }
 
 fn lookup_table<W: Write>(table: &str, writer: &mut W) {
-    write!(
+    writeln!(
         writer,
-        "pub const {}: &'static [(char, char)] = &[\n",
+        "pub const {}: &[(char, char)] = &[",
         table.replace(".", "_")
     ).unwrap();
 
@@ -29,16 +29,16 @@ fn lookup_table<W: Write>(table: &str, writer: &mut W) {
         let captures = regex.captures(line).unwrap();
         let start = captures.get(1).unwrap().as_str();
         let end = captures.get(2).map_or(start, |c| c.as_str());
-        write!(writer, "    ('\\u{{{}}}', '\\u{{{}}}'),\n", start, end).unwrap();
+        writeln!(writer, "    ('\\u{{{}}}', '\\u{{{}}}'),", start, end).unwrap();
     });
 
     write!(writer, "];\n\n").unwrap();
 }
 
 fn mapping_table<W: Write>(table: &str, writer: &mut W) {
-    write!(
+    writeln!(
         writer,
-        "pub const {}: &'static [(char, &'static str)] = &[\n",
+        "pub const {}: &[(char, &str)] = &[",
         table.replace(".", "_"),
     ).unwrap();
 
@@ -57,7 +57,7 @@ fn mapping_table<W: Write>(table: &str, writer: &mut W) {
             write!(writer, "\\u{{{}}}", output.as_str()).unwrap();
         }
 
-        write!(writer, "\"),\n").unwrap();
+        writeln!(writer, "\"),").unwrap();
     });
 
     write!(writer, "];\n\n").unwrap();
